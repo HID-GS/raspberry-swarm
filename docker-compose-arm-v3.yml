@@ -17,8 +17,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./data/logs/nginx/:/var/log/nginx
-      - ./codebase:/var/www/drupal
+      - /var/docker/lnpp/logs/nginx/:/var/log/nginx
+      - /var/docker/lnpp/codebase:/var/www/drupal
     depends_on:
       - php-fpm
     deploy:
@@ -32,8 +32,8 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./data/logs/php/:/var/log
-      - ./codebase:/var/www/drupal
+      - /var/docker/lnpp/logs/php/:/var/log
+      - /var/docker/lnpp/codebase:/var/www/drupal
     ports:
       - "9000"
     deploy:
