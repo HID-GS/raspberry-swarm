@@ -15,11 +15,13 @@ services:
   nginx:
     image: dlaion/raspberry-pi3-custon-nginx
     ports:
-        - "80:80"
-        - "443:443"
+      - "80:80"
+      - "443:443"
     volumes:
-        - ./data/logs/nginx/:/var/log/nginx
-        - ./codebase:/var/www/drupal
+      - ./data/logs/nginx/:/var/log/nginx
+      - ./codebase:/var/www/drupal
+    depends_on:
+      - php-fpm
   php-fpm:
     image: dlaion/raspberry-pi3-custon-php
     depends_on:
