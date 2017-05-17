@@ -13,10 +13,7 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql/data
   nginx:
-    build:
-      image: dlaion/raspberry-pi3-custon-nginx
-      args:
-          - PHP_UPSTREAM=php-fpm
+    image: dlaion/raspberry-pi3-custon-nginx
     ports:
         - "80:80"
         - "443:443"
