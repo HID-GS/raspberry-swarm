@@ -14,7 +14,7 @@ services:
       - postgresql_data:/var/lib/postgresql/data
   nginx:
     build:
-      context: ./nginx
+      image: dlaion/raspberry-pi3-custon-nginx
       args:
           - PHP_UPSTREAM=php-fpm
     ports:
@@ -24,8 +24,7 @@ services:
         - ./data/logs/nginx/:/var/log/nginx
         - ./codebase:/var/www/drupal
   php-fpm:
-    build:
-      context: ./php
+    image: dlaion/raspberry-pi3-custon-php
     depends_on:
       - postgres
     volumes:
