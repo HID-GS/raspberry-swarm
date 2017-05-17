@@ -1,0 +1,33 @@
+version: "2"
+services:
+  applications:
+    image: tianon/true
+    volumes:
+      - ./codebase:/var/www/drupal
+  postgres:
+    image: armhf/postgres:9.6-alpine
+    environment:
+      - POSTGRES_USER=drupal
+      - POSTGRES_PASSWORD=drupal
+      - POSTGRES_DB=drupal
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+  nginx:
+    image: dlaion/raspberry-pi3-custon-nginx
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./data/logs/nginx/:/var/log/nginx
+        - ./codebase:/var/www/drupal
+  php-fpm:
+    image: dlaion/raspberry-pi3-custon-php
+    depends_on:
+      - postgres
+    volumes:
+      - ./data/logs/php/:/var/log
+      - ./codebase:/var/www/drupal
+    ports:
+      - "9000"
+volumes:
+  postgresql_data:
