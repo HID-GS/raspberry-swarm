@@ -1,15 +1,14 @@
 version: "3"
 services:
-  applications:
-    image: armhf/alpine
-    volumes:
-      - ./codebase:/var/www/drupal
   postgres:
     image: armhf/postgres:9.6-alpine
     environment:
       - POSTGRES_USER=drupal
       - POSTGRES_PASSWORD=drupal
       - POSTGRES_DB=drupal
+    deploy:
+      placement:
+        constraints: [node.role == manager]
     volumes:
       - postgresql_data:/var/lib/postgresql/data
   nginx:
@@ -22,6 +21,12 @@ services:
       - ./codebase:/var/www/drupal
     depends_on:
       - php-fpm
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
   php-fpm:
     image: dlaion/raspberry-pi3-custon-php
     depends_on:
@@ -31,5 +36,12 @@ services:
       - ./codebase:/var/www/drupal
     ports:
       - "9000"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 volumes:
   postgresql_data:
