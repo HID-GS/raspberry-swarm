@@ -1,0 +1,37 @@
+version: "3"
+services:
+  applications:
+    image: tianon/true
+    volumes:
+      - ./codebase:/var/www/drupal
+  postgres:
+    image: armhf/postgres:9.6-alpine
+    environment:
+      - POSTGRES_USER=drupal
+      - POSTGRES_PASSWORD=drupal
+      - POSTGRES_DB=drupal
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+  nginx:
+    build:
+      context: ./nginx
+      args:
+          - PHP_UPSTREAM=php-fpm
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./data/logs/nginx/:/var/log/nginx
+        - ./codebase:/var/www/drupal
+  php-fpm:
+    build:
+      context: ./php
+    depends_on:
+      - postgres
+    volumes:
+      - ./data/logs/php/:/var/log
+      - ./codebase:/var/www/drupal
+    ports:
+      - "9000"
+volumes:
+  postgresql_data:
