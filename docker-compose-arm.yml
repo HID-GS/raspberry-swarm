@@ -1,11 +1,11 @@
-version: "3"
+version: "2"
 services:
   applications:
-    image: alpine
+    image: armhf/alpine
     volumes:
       - ./codebase:/var/www/drupal
   postgres:
-    image: postgres:alpine
+    image: armhf/postgres:9.6-alpine
     environment:
       - POSTGRES_USER=drupal
       - POSTGRES_PASSWORD=drupal
@@ -13,10 +13,7 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql/data
   nginx:
-    build:
-      context: ./nginx
-      args:
-          - PHP_UPSTREAM=php-fpm
+    image: dlaion/raspberry-pi3-custon-nginx
     ports:
         - "80:80"
         - "443:443"
@@ -24,8 +21,7 @@ services:
         - ./data/logs/nginx/:/var/log/nginx
         - ./codebase:/var/www/drupal
   php-fpm:
-    build:
-      context: ./php
+    image: dlaion/raspberry-pi3-custon-php
     depends_on:
       - postgres
     volumes:
