@@ -17,7 +17,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-#      - /var/docker/lnpp/logs/nginx/:/var/log/nginx
+      - logs:/var/log/nginx
       - codebase:/var/www/drupal
     depends_on:
       - php-fpm
@@ -32,10 +32,8 @@ services:
     depends_on:
       - postgres
     volumes:
-#      - /var/docker/lnpp/logs/php/:/var/log
-      - type: volume
-        source: codebase
-        target: /var/www/drupal
+      - logs:/var/log
+      - codebase:/var/www/drupal
     ports:
       - "9000"
     deploy:
@@ -47,8 +45,20 @@ services:
         condition: on-failure
 volumes:
   postgresql_data:
+    driver: local
+    driver_opts:
+          type: nfs
+          o: addr=10.88.0.1,rw
+          device: ":/var/docker/lnpp/dbdata"
   codebase:
+    driver: local
     driver_opts:
       type: nfs
-      o=addr: 10.88.0.1
-      device: :/var/docker/lnpp/codebase
+      o: addr=10.88.0.1,rw
+      device: ":/var/docker/lnpp/codebase"
+  logs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=10.88.0.1,rw
+      device: ":/var/docker/lnpp/logs"
